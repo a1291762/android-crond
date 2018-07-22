@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -139,7 +140,11 @@ class Crond {
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, lineNo, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT); // update current to replace the one used
                                                     // for cancelling any previous set alarms
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
+        }
         IO.logToLogFile(context.getString(R.string.log_scheduled_v2, lineNo + 1, parsedLine.runExpr,
                 DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.SSSS").print(next)));
     }
