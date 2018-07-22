@@ -5,7 +5,7 @@ Source Code:https://github.com/a1291762/android-crond
 Issue Tracker:https://github.com/a1291762/android-crond
 Changelog:
 Summary:crond
-Description:cron daemon
+Description:
 Simple Android app which implements crond using AlarmManager
 .
 Auto Update Mode:None
