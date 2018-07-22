@@ -19,26 +19,14 @@ class IO implements Shell.OnCommandResultListener {
 
     private static final String ROOT_PREFIX = "/data/";
     private static final String CRONTAB_FILE_NAME= "crontab";
-    private static final String CRONTAB_DEBUG_FILE_NAME= "crontab-debug";
     private static final String LOG_FILE_NAME = "crond.log";
-    private static final String LOG_DEBUG_FILE_NAME = "crond-debug.log";
 
     public static String getLogPath() {
-        if (BuildConfig.DEBUG) {
-            return new File(ROOT_PREFIX, LOG_DEBUG_FILE_NAME).getAbsolutePath();
-        }
-        else {
-            return new File(ROOT_PREFIX, LOG_FILE_NAME).getAbsolutePath();
-        }
+        return new File(ROOT_PREFIX, LOG_FILE_NAME).getAbsolutePath();
     }
 
     public static String getCrontabPath() {
-        if (BuildConfig.DEBUG) {
-            return new File(ROOT_PREFIX, CRONTAB_DEBUG_FILE_NAME).getAbsolutePath();
-        }
-        else {
-            return new File(ROOT_PREFIX, CRONTAB_FILE_NAME).getAbsolutePath();
-        }
+        return new File(ROOT_PREFIX, CRONTAB_FILE_NAME).getAbsolutePath();
     }
 
     static void clearLogFile() {
