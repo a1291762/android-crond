@@ -83,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView crontabContent = findViewById(R.id.text_content_crontab);
         crontabContent.setMovementMethod(new ScrollingMovementMethod());
 
+        final TextView crondlogLabel = findViewById(R.id.text_label_crond_log);
+        crondlogLabel.setText(getString(R.string.crond_log_label, IO.getLogPath()));
+
         final TextView crondLog = findViewById(R.id.text_content_crond_log);
         crondLog.setMovementMethod(new ScrollingMovementMethod());
 
@@ -240,6 +243,12 @@ public class MainActivity extends AppCompatActivity {
 
             final TextView crondLog = context.findViewById(R.id.text_content_crond_log);
             crondLog.setText(sequences[1]);
+            final int scrollAmount = crondLog.getLayout().getLineTop(crondLog.getLineCount()) - crondLog.getHeight();
+            // if there is no need to scroll, scrollAmount will be <=0
+            if (scrollAmount > 0)
+                crondLog.scrollTo(0, scrollAmount);
+            else
+                crondLog.scrollTo(0, 0);
         }
     }
 
