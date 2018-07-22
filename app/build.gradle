@@ -1,18 +1,10 @@
 apply plugin: 'com.android.application'
 
-def computeVersionCode = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'rev-list', '--count', 'HEAD'
-            standardOutput = stdout
-        }
-        return Integer.parseInt(stdout.toString().trim())
-    }
-    catch (ignored) {
-        return -1
-    }
-}
+Properties versionProps = new Properties()
+def versionPropsFile = file('../version.properties')
+if(versionPropsFile.exists())
+    versionProps.load(new FileInputStream(versionPropsFile))
+def code = (versionProps['VERSION_CODE'] ?: "1").toInteger()
 
 ext.computeVersionName = { ->
     try {
@@ -28,89 +20,20 @@ ext.computeVersionName = { ->
     }
 }
 
-def renameApk(variant, defaultConfig) {
-    variant.outputs.all { output ->
-        def buildType = ""
-        def file = output.outputFile
-        if (file.name.contains("release")) {
-            buildType = "release"
-        } else {
-            buildType = "debug"
-        }
-        def fileName = ""
-        if (buildType == "debug") {
-            fileName = defaultConfig.applicationId + "-"
-            fileName += computeVersionName() + "-"
-            fileName += buildType + ".apk"
-        }
-        else {
-            fileName = defaultConfig.applicationId + "-"
-            fileName += defaultConfig.versionName + "-"
-            fileName += buildType + ".apk"
-        }
-        output.outputFileName = fileName
-    }
-}
-
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-def keystoreProperties = new Properties()
-
-if (keystorePropertiesFile.exists()) {
-    project.setProperty("keyFile")
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 android {
-    signingConfigs {
-        if (project.hasProperty("keyFile")) {
-            release {
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-            }
-        }
-        else {
-            release {}
-        }
-    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "it.faerb.crond"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 16
-        versionName "v1.2.12"
+        versionCode code
+        versionName "v1.2.12 ("+code+")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            manifestPlaceholders = [applicationLabel: "@string/app_name_debug"]
-            applicationVariants.all { variant ->
-                renameApk(variant, defaultConfig)
-            }
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [applicationLabel: "@string/app_name"]
-            signingConfig signingConfigs.release
-            applicationVariants.all { variant ->
-                renameApk(variant, defaultConfig)
-            }
-        }
-    }
-    applicationVariants.all { variant ->
-        def flavor = variant.mergedFlavor
-        if (variant.buildType.isDebuggable()) {
-        flavor.versionName = computeVersionName()
-        flavor.versionCode = computeVersionCode()
-        }
-        else {
-            flavor.versionName = defaultConfig.versionName
-            flavor.versionCode = defaultConfig.versionCode
         }
     }
 }

@@ -1,0 +1,5 @@
+package=it.faerb.crond
+activity=MainActivity
+package_name=crond
+apkdir=app/build/outputs/apk
+apkname=app

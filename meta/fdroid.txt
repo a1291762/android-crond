@@ -1,0 +1,12 @@
+Categories:System
+License:Free
+Web Site:https://github.com/a1291762/android-crond
+Source Code:https://github.com/a1291762/android-crond
+Issue Tracker:https://github.com/a1291762/android-crond
+Changelog:
+Summary:crond
+Description:cron daemon
+Simple Android app which implements crond using AlarmManager
+.
+Auto Update Mode:None
+Update Check Mode:None

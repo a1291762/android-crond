@@ -1,10 +1,54 @@
-*.iml
-.gradle
-/local.properties
-.idea
+# built application files
+#*.apk
+#*.ap_
+
+# files for the dex VM
+#*.dex
+# Java class files
+#*.class
+# built native files
+obj/
+
+# Ignore gradle files
+.gradle/
+build/
+
+# Mac OS X clutter
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-keystore.properties
-*.apk
+
+# Windows clutter
+Thumbs.db
+
+# Vim clutter
+.*.sw?
+
+# Eclipse
+.classpath
+.project
+.settings/
+proguard/
+.metadata/
+#bin
+gen
+project.properties
+
+# Android Studio / IntelliJ IDEA 
+*.iws
+.idea/
+*.iml
+# Local configuration file (sdk path, etc)
+local.properties
+
+Makefile
+
+# build number
+version.properties
+
+libs/armeabi-v7a/
+libs/armeabi/
+libs/x86/
+
+# gradle wrapper
+gradle/
+gradlew
+gradlew.bat
