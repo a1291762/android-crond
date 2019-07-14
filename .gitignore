@@ -7,7 +7,7 @@
 # Java class files
 #*.class
 # built native files
-obj/
+.externalNativeBuild
 
 # Ignore gradle files
 .gradle/
@@ -44,11 +44,7 @@ Makefile
 # build number
 version.properties
 
-libs/armeabi-v7a/
-libs/armeabi/
-libs/x86/
-
 # gradle wrapper
-gradle/
+gradle/wrapper/gradle-wrapper.jar
 gradlew
 gradlew.bat
