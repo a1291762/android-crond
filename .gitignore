@@ -7,7 +7,7 @@
 # Java class files
 #*.class
 # built native files
-.externalNativeBuild
+.cxx
 
 # Ignore gradle files
 .gradle/
