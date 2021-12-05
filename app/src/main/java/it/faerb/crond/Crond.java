@@ -137,9 +137,13 @@ class Crond {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(INTENT_EXTRA_LINE_NAME, line);
         intent.putExtra(INTENT_EXTRA_LINE_NO_NAME, lineNo);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (Build.VERSION.SDK_INT >= 23) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, lineNo, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT); // update current to replace the one used
-                                                    // for cancelling any previous set alarms
+                flags); // update current to replace the one used
+                        // for cancelling any previous set alarms
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
         } else {
@@ -199,7 +203,11 @@ class Crond {
     private void cancelAllAlarms(int oldTabLineCount) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         for (int i = 0; i<oldTabLineCount; i++) {
-            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, i, intent, 0);
+            int flags = 0;
+            if (Build.VERSION.SDK_INT >= 23) {
+                flags |= PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, i, intent, flags);
             alarmManager.cancel(alarmIntent);
         }
     }

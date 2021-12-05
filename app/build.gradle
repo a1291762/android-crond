@@ -21,11 +21,11 @@ ext.computeVersionName = { ->
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
     defaultConfig {
         applicationId "it.faerb.crond"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 31
         versionCode code
         versionName "v1.2.12 ("+code+")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -39,8 +39,9 @@ android {
 }
 
 repositories {
-    jcenter()
     google()
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
