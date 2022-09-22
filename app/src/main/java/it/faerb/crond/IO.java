@@ -21,12 +21,23 @@ class IO implements Shell.OnCommandResultListener {
     private static final String CRONTAB_FILE_NAME= "crontab";
     private static final String LOG_FILE_NAME = "crond.log";
 
+    static boolean rootAvailable = false;
+    static File nonRootPrefix;
+
     public static String getLogPath() {
-        return new File(ROOT_PREFIX, LOG_FILE_NAME).getAbsolutePath();
+        if (rootAvailable) {
+            return new File(ROOT_PREFIX, LOG_FILE_NAME).getAbsolutePath();
+        } else {
+            return new File(nonRootPrefix, LOG_FILE_NAME).getAbsolutePath();
+        }
     }
 
     public static String getCrontabPath() {
-        return new File(ROOT_PREFIX, CRONTAB_FILE_NAME).getAbsolutePath();
+        if (rootAvailable) {
+            return new File(ROOT_PREFIX, CRONTAB_FILE_NAME).getAbsolutePath();
+        } else {
+            return new File(nonRootPrefix, CRONTAB_FILE_NAME).getAbsolutePath();
+        }
     }
 
     static void clearLogFile() {
@@ -86,12 +97,14 @@ class IO implements Shell.OnCommandResultListener {
     private Shell.Interactive shell = null;
 
     private IO() {
-        shell = new Shell.Builder()
-                .useSU()
+        Shell.Builder builder = new Shell.Builder()
                 .setHandler(null)
                 .setAutoHandler(false)
-                .setMinimalLogging(BuildConfig.DEBUG)
-                .open();
+                .setMinimalLogging(BuildConfig.DEBUG);
+        if (rootAvailable) {
+            builder.useSU();
+        }
+        shell = builder.open();
     }
 
     private static IO get() {

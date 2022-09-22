@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Crond crond = null;
 
     private SharedPreferences sharedPrefs = null;
-    private boolean rootAvailable = false;
+    private boolean inited = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +56,19 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected Boolean doInBackground(Void... params) {
-            contextRef.get().rootAvailable = Shell.SU.available();
-            return contextRef.get().rootAvailable;
+            IO.rootAvailable = Shell.SU.available();
+            IO.nonRootPrefix = contextRef.get().getExternalFilesDir(null);
+            return IO.rootAvailable;
         }
 
         @Override
         protected void onPostExecute(Boolean rootAvail) {
-            if (rootAvail) {
-                contextRef.get().init();
-            }
+            contextRef.get().init();
         }
     }
 
     private void init() {
+        inited = true;
         crond = new Crond(this);
         sharedPrefs = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE);
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
        super.onResume();
         refreshHandler.removeCallbacksAndMessages(null);
-        if (rootAvailable) {
+        if (inited) {
             refreshHandler.post(refresh);
         }
     }
