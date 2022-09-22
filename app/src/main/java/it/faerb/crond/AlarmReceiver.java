@@ -47,7 +47,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             String line = intent[0].getExtras().getString(INTENT_EXTRA_LINE_NAME);
             int lineNo = intent[0].getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
             crond.executeLine(line, lineNo);
-            crond.scheduleLine(line, lineNo);
+            crond.scheduleLine(line, lineNo, false, false, false);
             if (sharedPrefs.getBoolean(PREF_USE_WAKE_LOCK, false)) {
                 wakeLock.release();
             }

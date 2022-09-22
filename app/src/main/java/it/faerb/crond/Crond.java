@@ -87,7 +87,7 @@ class Crond {
             // only schedule when enabled
             if (sharedPrefs.getBoolean(PREF_ENABLED, false)) {
                 IO.logToLogFile(context.getString(R.string.log_crontab_change_detected));
-                scheduleCrontab();
+                scheduleCrontab(false, true, false);
             }
             // save in any case such that on installation the crontab is not "new"
             sharedPrefs.edit().putString(PREF_CRONTAB_HASH, hashedTab).apply();
@@ -107,7 +107,7 @@ class Crond {
         this.crontab = crontab;
     }
 
-    public void scheduleCrontab() {
+    public void scheduleCrontab(boolean isEnable, boolean isChange, boolean isBoot) {
         cancelAllAlarms(sharedPrefs.getInt(PREF_CRONTAB_LINE_COUNT, 0));
         // check here, because this can get called directly
         if (!sharedPrefs.getBoolean(PREF_ENABLED, false)) {
@@ -115,25 +115,36 @@ class Crond {
         }
         int i = 0;
         for (String line : crontab.split("\n")) {
-            scheduleLine(line, i);
+            scheduleLine(line, i, isEnable, isChange, isBoot);
             i++;
         }
         sharedPrefs.edit().putInt(PREF_CRONTAB_LINE_COUNT, crontab.split("\n").length).apply();
     }
 
-    public void scheduleLine(String line, int lineNo) {
+    public void scheduleLine(String line, int lineNo, boolean isEnable, boolean isChange, boolean isBoot) {
         ParsedLine parsedLine = parseLine(line);
         if (parsedLine == null) {
             return;
         }
-        ExecutionTime time;
-        try {
-            time = ExecutionTime.forCron(parser.parse(parsedLine.cronExpr));
+        DateTime next;
+        if (parsedLine.cronExpr.equals("@enable")) {
+            if (!isEnable) return;
+            next = DateTime.now();
+        } else if (parsedLine.cronExpr.equals("@change")) {
+            if (!isChange) return;
+            next = DateTime.now();
+        } else if (parsedLine.cronExpr.equals("@reboot")) {
+            if (!isBoot) return;
+            next = DateTime.now();
+        } else {
+            ExecutionTime time;
+            try {
+                time = ExecutionTime.forCron(parser.parse(parsedLine.cronExpr));
+            } catch (IllegalArgumentException e) {
+                return;
+            }
+            next = time.nextExecution(DateTime.now());
         }
-        catch (IllegalArgumentException e) {
-            return;
-        }
-        DateTime next = time.nextExecution(DateTime.now());
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(INTENT_EXTRA_LINE_NAME, line);
         intent.putExtra(INTENT_EXTRA_LINE_NO_NAME, lineNo);
@@ -181,7 +192,17 @@ class Crond {
                         new StyleSpan(Typeface.ITALIC), Spanned.SPAN_COMPOSING);
                 ret.append(parsedLine.runExpr + " ",
                         new TypefaceSpan("monospace"), Spanned.SPAN_COMPOSING);
-                ret.append(descriptor.describe(parser.parse(parsedLine.cronExpr)) + "\n",
+                String description;
+                if (parsedLine.cronExpr.equals("@enable")) {
+                    description = context.getString(R.string.when_enabling);
+                } else if (parsedLine.cronExpr.equals("@change")) {
+                    description = context.getString(R.string.when_crontab_changes);
+                } else if (parsedLine.cronExpr.equals("@reboot")) {
+                    description = context.getString(R.string.at_reboot);
+                } else {
+                    description = descriptor.describe(parser.parse(parsedLine.cronExpr));
+                }
+                ret.append(description + "\n",
                         new StyleSpan(Typeface.ITALIC), Spanned.SPAN_COMPOSING);
             }
             catch (IllegalArgumentException e) {
@@ -218,15 +239,20 @@ class Crond {
             return null;
         }
         if (line.charAt(0) != '*'
+                && line.charAt(0) != '@'
                 && !Character.isDigit(line.charAt(0))) {
             return null;
         }
         String [] splitLine = line.split(" ");
-        if (splitLine.length < 6) {
+        int timeFields = 5;
+        if (splitLine.length >= 1 && (splitLine[0].equals("@enable") || splitLine[0].equals("@change") || splitLine[0].equals("@reboot"))) {
+            timeFields = 1;
+        }
+        if (splitLine.length <= timeFields) {
             return null;
         }
-        String[] cronExpr = Arrays.copyOfRange(splitLine, 0, 5);
-        String[] runExpr = Arrays.copyOfRange(splitLine, 5, splitLine.length);
+        String[] cronExpr = Arrays.copyOfRange(splitLine, 0, timeFields);
+        String[] runExpr = Arrays.copyOfRange(splitLine, timeFields, splitLine.length);
         String joinedCronExpr = TextUtils.join(" ", cronExpr);
         String joinedRunExpr = TextUtils.join(" ", runExpr);
         return new ParsedLine(joinedCronExpr, joinedRunExpr);

@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean oldEnabled = sharedPrefs.getBoolean(PREF_ENABLED, false);
                 sharedPrefs.edit().putBoolean(PREF_ENABLED, !oldEnabled).apply();
                 updateEnabled();
-                crond.scheduleCrontab();
+                crond.scheduleCrontab(true, false, false);
                 refreshImmediately();
             }
         });
