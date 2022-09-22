@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
@@ -248,7 +249,12 @@ public class MainActivity extends AppCompatActivity {
 
             final TextView crondLog = context.findViewById(R.id.text_content_crond_log);
             crondLog.setText(sequences[1]);
-            final int scrollAmount = crondLog.getLayout().getLineTop(crondLog.getLineCount()) - crondLog.getHeight();
+            Layout layout = crondLog.getLayout();
+            if (layout == null) {
+                // When launching with the screen off... we get here. Avoid crashing!
+                return;
+            }
+            final int scrollAmount = layout.getLineTop(crondLog.getLineCount()) - crondLog.getHeight();
             // if there is no need to scroll, scrollAmount will be <=0
             if (scrollAmount > 0)
                 crondLog.scrollTo(0, scrollAmount);
