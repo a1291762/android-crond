@@ -4,7 +4,6 @@ AuthorName: a1291762
 License: 0BSD
 
 SourceCode: https://github.com/a1291762/android-crond
-IssueTracker: https://github.com/a1291762/android-crond/issues
 
 AutoUpdateMode: None
 UpdateCheckMode: None
