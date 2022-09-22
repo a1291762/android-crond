@@ -1,0 +1,4 @@
+This is an implmentation of crond that uses AlarmManager to run on Android.
+
+crond works best with root, but will run without it (albeit, with limited abilities).
+
