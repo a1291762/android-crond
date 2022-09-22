@@ -1,4 +1,4 @@
-package it.faerb.crond;
+package net.yasmar.crond;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -10,10 +10,10 @@ import android.os.PowerManager;
 
 import java.lang.ref.WeakReference;
 
-import static it.faerb.crond.Constants.INTENT_EXTRA_LINE_NAME;
-import static it.faerb.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
-import static it.faerb.crond.Constants.PREFERENCES_FILE;
-import static it.faerb.crond.Constants.PREF_USE_WAKE_LOCK;
+import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NAME;
+import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
+import static net.yasmar.crond.Constants.PREFERENCES_FILE;
+import static net.yasmar.crond.Constants.PREF_USE_WAKE_LOCK;
 
 public class AlarmReceiver extends BroadcastReceiver {
 

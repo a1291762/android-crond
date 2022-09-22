@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.3
+* Schedule exact alarms on Android 23+
+* Show crond.log in the app
+* Add support for some pseudo expressions in crontab (@enable, @change, @reboot)
+* Allow crond to work without root
+
 ## v1.2.12
  * Fixed a bug which would reschedule on every launch
 

@@ -1,4 +1,4 @@
-package it.faerb.crond;
+package net.yasmar.crond;
 
 import android.text.TextUtils;
 import android.util.Log;

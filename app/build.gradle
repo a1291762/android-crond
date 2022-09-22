@@ -23,11 +23,11 @@ ext.computeVersionName = { ->
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "it.faerb.crond"
+        applicationId "net.yasmar.crond"
         minSdkVersion 21
         targetSdkVersion 33
         versionCode code
-        versionName "v1.2.12 ("+code+")"
+        versionName "v1.3 ("+code+")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -1,4 +1,4 @@
-package=it.faerb.crond
+package=net.yasmar.crond
 activity=MainActivity
 package_name=crond
 apkdir=app/build/outputs/apk

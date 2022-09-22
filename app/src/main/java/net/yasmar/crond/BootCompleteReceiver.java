@@ -1,4 +1,4 @@
-package it.faerb.crond;
+package net.yasmar.crond;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 
 import static android.content.Context.MODE_PRIVATE;
-import static it.faerb.crond.Constants.PREFERENCES_FILE;
-import static it.faerb.crond.Constants.PREF_ENABLED;
+import static net.yasmar.crond.Constants.PREFERENCES_FILE;
+import static net.yasmar.crond.Constants.PREF_ENABLED;
 
 public class BootCompleteReceiver extends BroadcastReceiver {
 

@@ -1,4 +1,4 @@
-package it.faerb.crond;
+package net.yasmar.crond;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -31,13 +31,13 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import static it.faerb.crond.Constants.INTENT_EXTRA_LINE_NAME;
-import static it.faerb.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
-import static it.faerb.crond.Constants.PREFERENCES_FILE;
-import static it.faerb.crond.Constants.PREF_CRONTAB_HASH;
-import static it.faerb.crond.Constants.PREF_ENABLED;
-import static it.faerb.crond.Constants.PREF_NOTIFICATION_ENABLED;
-import static it.faerb.crond.Util.getColor;
+import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NAME;
+import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
+import static net.yasmar.crond.Constants.PREFERENCES_FILE;
+import static net.yasmar.crond.Constants.PREF_CRONTAB_HASH;
+import static net.yasmar.crond.Constants.PREF_ENABLED;
+import static net.yasmar.crond.Constants.PREF_NOTIFICATION_ENABLED;
+import static net.yasmar.crond.Util.getColor;
 
 
 class Crond {

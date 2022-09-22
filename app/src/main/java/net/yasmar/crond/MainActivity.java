@@ -1,4 +1,4 @@
-package it.faerb.crond;
+package net.yasmar.crond;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,10 +26,10 @@ import java.lang.ref.WeakReference;
 import eu.chainfire.libsuperuser.Shell;
 
 import static android.view.View.VISIBLE;
-import static it.faerb.crond.Constants.PREFERENCES_FILE;
-import static it.faerb.crond.Constants.PREF_ENABLED;
-import static it.faerb.crond.Constants.PREF_NOTIFICATION_ENABLED;
-import static it.faerb.crond.Constants.PREF_USE_WAKE_LOCK;
+import static net.yasmar.crond.Constants.PREFERENCES_FILE;
+import static net.yasmar.crond.Constants.PREF_ENABLED;
+import static net.yasmar.crond.Constants.PREF_NOTIFICATION_ENABLED;
+import static net.yasmar.crond.Constants.PREF_USE_WAKE_LOCK;
 
 public class MainActivity extends AppCompatActivity {
 
