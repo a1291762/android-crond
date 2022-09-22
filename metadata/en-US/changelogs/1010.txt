@@ -7,3 +7,5 @@ crond has been forked from upstream, with the following new features.
   @change triggers when the crontab is detected as having changed
   @reboot triggers when the device boots
 * Allow crond to run without root
+
+Note that new strings were added, so non-English translations will have issues.
