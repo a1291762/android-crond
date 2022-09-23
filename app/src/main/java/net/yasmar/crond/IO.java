@@ -99,11 +99,14 @@ class IO implements Shell.OnCommandResultListener {
     private IO() {
         Shell.Builder builder = new Shell.Builder()
                 .setHandler(null)
-                .setAutoHandler(false)
-                .setMinimalLogging(BuildConfig.DEBUG);
+                .setAutoHandler(false);
         if (rootAvailable) {
             builder.useSU();
+        } else {
+            builder.useSH();
         }
+        builder.setMinimalLogging(true);
+        builder.setWantSTDERR(false);
         shell = builder.open();
     }
 
