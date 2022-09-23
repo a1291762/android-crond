@@ -22,13 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name="net.yasmar.crond.BootCompleteReceiver"
+        <receiver android:name=".BootCompleteReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="net.yasmmar.crond.AlarmReceiver" />
+        <receiver android:name=".AlarmReceiver" />
     </application>
 
 </manifest>

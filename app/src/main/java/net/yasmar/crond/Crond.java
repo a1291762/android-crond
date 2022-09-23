@@ -129,13 +129,13 @@ class Crond {
         DateTime next;
         if (parsedLine.cronExpr.equals("@enable")) {
             if (!isEnable) return;
-            next = DateTime.now();
+            next = DateTime.now().plusSeconds(1);
         } else if (parsedLine.cronExpr.equals("@change")) {
             if (!isChange) return;
-            next = DateTime.now();
+            next = DateTime.now().plusSeconds(1);
         } else if (parsedLine.cronExpr.equals("@reboot")) {
             if (!isBoot) return;
-            next = DateTime.now();
+            next = DateTime.now().plusSeconds(1);
         } else {
             ExecutionTime time;
             try {

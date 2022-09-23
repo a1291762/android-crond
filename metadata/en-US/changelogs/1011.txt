@@ -1,0 +1,1 @@
+Build with and target Android 12 due to an issue setting alarms.
