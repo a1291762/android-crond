@@ -1,3 +1,9 @@
+1011
+
+Build with and target Android 12 due to an issue setting alarms.
+
+1010
+
 crond has been forked from upstream, with the following new features.
 
 * Set exact alarms on Android 23+
