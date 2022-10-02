@@ -30,6 +30,7 @@ android {
         versionName "v1.3 ("+code+")"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    namespace 'net.yasmar.crond'
     buildTypes {
         release {
             minifyEnabled false
