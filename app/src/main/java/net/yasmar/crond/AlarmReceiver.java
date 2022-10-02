@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
@@ -21,7 +22,16 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        // TODO
+        // Start a foreground service
+        // service starts async tasks
+        // async task ends and calls service
+        // when no tasks left, service ends
+
+        Log.i(TAG, "AlarmReceiver START onReceive");
         new LineExecutor(context).execute(intent);
+        Log.i(TAG, "AlarmReceiver STOP onReceive");
     }
 
     private static class LineExecutor extends AsyncTask<Intent, Void, Void> {
@@ -34,6 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         @SuppressLint("WakelockTimeout")
         @Override
         protected Void doInBackground(Intent... intent) {
+            Log.i(TAG, "AlarmReceiver START doInBackground");
             Context context = contextRef.get();
             SharedPreferences sharedPrefs = context.getSharedPreferences(PREFERENCES_FILE,
                     Context.MODE_PRIVATE);
@@ -46,11 +57,14 @@ public class AlarmReceiver extends BroadcastReceiver {
             Crond crond = new Crond(context);
             String line = intent[0].getExtras().getString(INTENT_EXTRA_LINE_NAME);
             int lineNo = intent[0].getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
+            Log.i(TAG, "AlarmReceiver START executeLine");
             crond.executeLine(line, lineNo);
+            Log.i(TAG, "AlarmReceiver STOP executeLine");
             crond.scheduleLine(line, lineNo, false, false, false);
             if (sharedPrefs.getBoolean(PREF_USE_WAKE_LOCK, false)) {
                 wakeLock.release();
             }
+            Log.i(TAG, "AlarmReceiver STOP doInBackground");
             return null;
         }
     }
