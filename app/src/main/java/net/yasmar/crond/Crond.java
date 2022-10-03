@@ -37,7 +37,6 @@ import static net.yasmar.crond.Constants.PREFERENCES_FILE;
 import static net.yasmar.crond.Constants.PREF_CRONTAB_HASH;
 import static net.yasmar.crond.Constants.PREF_ENABLED;
 import static net.yasmar.crond.Constants.PREF_NOTIFICATION_ENABLED;
-import static net.yasmar.crond.Util.getColor;
 
 
 class Crond {
@@ -148,18 +147,11 @@ class Crond {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(INTENT_EXTRA_LINE_NAME, line);
         intent.putExtra(INTENT_EXTRA_LINE_NO_NAME, lineNo);
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= 23) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, lineNo, intent,
                 flags); // update current to replace the one used
                         // for cancelling any previous set alarms
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
-        } else {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
-        }
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
         IO.logToLogFile(context.getString(R.string.log_scheduled_v2, lineNo + 1, parsedLine.runExpr,
                 DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.SSSS").print(next)));
     }
@@ -216,7 +208,7 @@ class Crond {
         }
 
         ret.setSpan(new ForegroundColorSpan(
-                        getColor(context, R.color.colorPrimaryDark)), 0,
+                        context.getColor(R.color.colorPrimaryDark)), 0,
                 ret.length(), Spanned.SPAN_COMPOSING);
         return ret;
     }
@@ -224,10 +216,7 @@ class Crond {
     private void cancelAllAlarms(int oldTabLineCount) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         for (int i = 0; i<oldTabLineCount; i++) {
-            int flags = 0;
-            if (Build.VERSION.SDK_INT >= 23) {
-                flags |= PendingIntent.FLAG_IMMUTABLE;
-            }
+            int flags = PendingIntent.FLAG_IMMUTABLE;
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, i, intent, flags);
             alarmManager.cancel(alarmIntent);
         }

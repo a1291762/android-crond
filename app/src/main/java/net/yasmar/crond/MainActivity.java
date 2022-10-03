@@ -175,13 +175,13 @@ public class MainActivity extends AppCompatActivity {
         final Button enableButton = findViewById(R.id.button_enable);
 
         if (enabled) {
-            crontabContent.setBackgroundColor(Util.getColor(this, R.color.colorBackgroundActive));
-            crondLog.setBackgroundColor(Util.getColor(this, R.color.colorBackgroundActive));
+            crontabContent.setBackgroundColor(getColor(R.color.colorBackgroundActive));
+            crondLog.setBackgroundColor(getColor(R.color.colorBackgroundActive));
             enableButton.setText(getString(R.string.button_label_enabled));
         }
         else {
-            crontabContent.setBackgroundColor(Util.getColor(this, R.color.colorBackgroundInactive));
-            crondLog.setBackgroundColor(Util.getColor(this, R.color.colorBackgroundInactive));
+            crontabContent.setBackgroundColor(getColor(R.color.colorBackgroundInactive));
+            crondLog.setBackgroundColor(getColor(R.color.colorBackgroundInactive));
             enableButton.setText(getString(R.string.button_label_disabled));
         }
     }
@@ -190,16 +190,13 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (Build.VERSION.SDK_INT >= 23) {
-            flags |= PendingIntent.FLAG_IMMUTABLE;
-        }
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,
                 flags);
         notificationManager.notify(1,
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_notification_icon)
-                        .setColor(Util.getColor(context, R.color.colorPrimary))
+                        .setColor(context.getColor(R.color.colorPrimary))
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(msg)
                         .setContentIntent(pendingIntent)
