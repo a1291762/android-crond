@@ -6,20 +6,6 @@ if(versionPropsFile.exists())
     versionProps.load(new FileInputStream(versionPropsFile))
 def code = (versionProps['VERSION_CODE'] ?: "1").toInteger()
 
-ext.computeVersionName = { ->
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'describe', '--tags', '--long'
-            standardOutput = stdout
-        }
-        return stdout.toString().trim()
-    }
-    catch (ignored) {
-        return null
-    }
-}
-
 android {
     compileSdkVersion 31
     defaultConfig {
