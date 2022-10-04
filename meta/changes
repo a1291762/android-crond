@@ -1,5 +1,5 @@
 * Change the job running code to be resilient to Android 8+ background restrictions.
-* Bump the minimum version to API 26 in order to dump a bunch of old API calls.
+* Bump the minimum version to API 26 and remove old API calls.
 
 v1.3 (1011)
 

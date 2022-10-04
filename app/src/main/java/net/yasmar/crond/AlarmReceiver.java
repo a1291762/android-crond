@@ -24,11 +24,19 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         Log.i(TAG, "AlarmReceiver START onReceive");
-        //new LineExecutor(context).execute(intent);
+
+        // schedule the next job first
+        Crond crond = new Crond(context);
+        String line = intent.getExtras().getString(INTENT_EXTRA_LINE_NAME);
+        int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
+        crond.scheduleLine(line, lineNo, false, false, false);
+
+        // now run the job in a background thread attached to a foreground service
         Intent serviceIntent = new Intent(context, JobRunnerService.class);
         serviceIntent.setAction("start");
         serviceIntent.putExtras(intent);
         context.startForegroundService(serviceIntent);
+
         Log.i(TAG, "AlarmReceiver STOP onReceive");
     }
 
