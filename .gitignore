@@ -22,16 +22,6 @@ Thumbs.db
 # Vim clutter
 .*.sw?
 
-# Eclipse
-.classpath
-.project
-.settings/
-proguard/
-.metadata/
-#bin
-gen
-project.properties
-
 # Android Studio / IntelliJ IDEA 
 *.iws
 .idea/
@@ -41,10 +31,3 @@ local.properties
 
 Makefile
 
-# build number
-version.properties
-
-# gradle wrapper
-gradle/wrapper/gradle-wrapper.jar
-gradlew
-gradlew.bat
