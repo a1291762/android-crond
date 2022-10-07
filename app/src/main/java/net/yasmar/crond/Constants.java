@@ -6,6 +6,8 @@ class Constants {
     static final String PREF_CRONTAB_HASH = "crontabHash";
     static final String PREF_NOTIFICATION_ENABLED = "notification";
     static final String PREF_USE_WAKE_LOCK = "wakeLock";
+    static final String PREF_ROOT_WARNING = "rootWarning";
+    static final String PREF_BATTERY_WARNING = "batteryWarning";
 
     static final String INTENT_EXTRA_LINE_NAME = "net.yasmar.crond.line";
     static final String INTENT_EXTRA_LINE_NO_NAME = "net.yasmar.crond.lineNo";

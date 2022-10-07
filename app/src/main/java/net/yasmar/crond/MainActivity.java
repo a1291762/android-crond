@@ -6,13 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -27,8 +29,10 @@ import eu.chainfire.libsuperuser.Shell;
 
 import static android.view.View.VISIBLE;
 import static net.yasmar.crond.Constants.PREFERENCES_FILE;
+import static net.yasmar.crond.Constants.PREF_BATTERY_WARNING;
 import static net.yasmar.crond.Constants.PREF_ENABLED;
 import static net.yasmar.crond.Constants.PREF_NOTIFICATION_ENABLED;
+import static net.yasmar.crond.Constants.PREF_ROOT_WARNING;
 import static net.yasmar.crond.Constants.PREF_USE_WAKE_LOCK;
 
 public class MainActivity extends AppCompatActivity {
@@ -64,7 +68,64 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean rootAvail) {
-            contextRef.get().init();
+            MainActivity context = contextRef.get();
+            if (!IO.rootAvailable) {
+                context.noRoot();
+            } else {
+                context.init();
+            }
+        }
+    }
+
+    private void noRoot() {
+        sharedPrefs = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE);
+        boolean hasWarned = sharedPrefs.getBoolean(PREF_ROOT_WARNING, false);
+        if (!hasWarned) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Root not detected")
+                    .setMessage("Without root, functionality will be extremely limited. Note that crond should be fully closed after enabling root.")
+                    .setNeutralButton(android.R.string.ok, (d, w) -> {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putBoolean(PREF_ROOT_WARNING, true);
+                        editor.apply();
+                        checkBattery();
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            checkBattery();
+        }
+    }
+
+    private void checkBattery() {
+        sharedPrefs = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE);
+        boolean hasWarned = sharedPrefs.getBoolean(PREF_BATTERY_WARNING, false);
+        String packageName = getPackageName();
+        PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
+        if (!pm.isIgnoringBatteryOptimizations(packageName) && !hasWarned) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Battery optimization detected")
+                    .setMessage("Please disable battery optimization. Otherwise scheduled jobs will probably not run.")
+                    .setPositiveButton(android.R.string.yes, (d, w) -> {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putBoolean(PREF_BATTERY_WARNING, true);
+                        editor.apply();
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                        intent.setData(Uri.parse("package:"+packageName));
+                        startActivity(intent);
+                        init();
+                    })
+                    .setNegativeButton(android.R.string.no, (d, w) -> {
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putBoolean(PREF_BATTERY_WARNING, true);
+                        editor.apply();
+                        init();
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        } else {
+            init();
         }
     }
 
