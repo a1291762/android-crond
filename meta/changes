@@ -1,10 +1,11 @@
+* Notify the user about a lack of root (but only once).
+* Prompt the user to disable battery optimization, since it keeps ruining the app for me.
+
+v1.3 (1013)
+
 * Schedule the next job before running the current job. Attempted workaround for Android 8+ ignoring scheduled alarms.
 
 v1.3 (1012)
 
 * Change the job running code to be resilient to Android 8+ background restrictions.
 * Bump the minimum version to API 26 and remove old API calls.
-
-v1.3 (1011)
-
-* Build with and target Android 12 due to an issue setting alarms.
