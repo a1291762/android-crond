@@ -98,14 +98,16 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_weight="0.5"
-            android:text="@string/button_label_clear" />
+            android:text="@string/button_label_clear"
+            style="?android:attr/buttonBarButtonStyle" />
         <Button
             android:id="@+id/button_enable"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_weight="0.5"
-            android:text="@string/button_label_disabled" />
+            android:text="@string/button_label_disabled"
+            style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 
 

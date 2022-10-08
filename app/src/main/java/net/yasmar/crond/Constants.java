@@ -11,4 +11,6 @@ class Constants {
 
     static final String INTENT_EXTRA_LINE_NAME = "net.yasmar.crond.line";
     static final String INTENT_EXTRA_LINE_NO_NAME = "net.yasmar.crond.lineNo";
+
+    static final int POST_NOTIFICATIONS = 1;
 }

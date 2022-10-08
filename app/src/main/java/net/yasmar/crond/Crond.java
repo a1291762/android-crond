@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -45,11 +44,11 @@ class Crond {
 
     private final CronParser parser =
             new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
-    private CronDescriptor descriptor = null;
+    private CronDescriptor descriptor;
 
-    private Context context = null;
-    private AlarmManager alarmManager = null;
-    private SharedPreferences sharedPrefs = null;
+    private Context context;
+    private AlarmManager alarmManager;
+    private SharedPreferences sharedPrefs;
     private String crontab = "";
 
     private static final String PREF_CRONTAB_LINE_COUNT = "old_tab_line_count";
@@ -63,7 +62,7 @@ class Crond {
             descriptor = CronDescriptor.instance(Locale.getDefault());
         }
         catch (MissingResourceException e) {
-            Log.w(TAG, "Cannot find locale \"" + Locale.getDefault().toString()
+            Log.w(TAG, "Cannot find locale \"" + Locale.getDefault()
                     + "\". Switching to default locale.");
             descriptor = CronDescriptor.instance();
         }

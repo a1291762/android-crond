@@ -10,10 +10,12 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import eu.chainfire.libsuperuser.Shell;
 
-class IO implements Shell.OnCommandResultListener {
+class IO implements Shell.OnCommandResultListener2 {
 
     private static final String TAG = "IO";
 
@@ -66,8 +68,8 @@ class IO implements Shell.OnCommandResultListener {
     }
 
     static void logToLogFile(String msg) {
-        msg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(new Date()) + " " + msg;
-        Log.i(TAG, executeCommand("echo \'" + shellEscaper.escape(msg) + "\' >> "
+        msg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS", Locale.US).format(new Date()) + " " + msg;
+        Log.i(TAG, executeCommand("echo '" + shellEscaper.escape(msg) + "' >> "
                 + getLogPath()).getOutput());
     }
 
@@ -94,7 +96,7 @@ class IO implements Shell.OnCommandResultListener {
 
     private static IO instance = null;
     private CommandResult lastResult = null;
-    private Shell.Interactive shell = null;
+    private Shell.Interactive shell;
 
     private IO() {
         Shell.Builder builder = new Shell.Builder()
@@ -106,7 +108,6 @@ class IO implements Shell.OnCommandResultListener {
             builder.useSH();
         }
         builder.setMinimalLogging(true);
-        builder.setWantSTDERR(false);
         shell = builder.open();
     }
 
@@ -120,7 +121,8 @@ class IO implements Shell.OnCommandResultListener {
     }
 
     @Override
-    public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+    public void onCommandResult(int commandCode, int exitCode, @NonNull List<String> output, @NonNull List<String> error) {
         get().lastResult = new CommandResult(exitCode, output);
     }
+
 }
