@@ -135,6 +135,7 @@ public class JobRunnerService
         Log.i(TAG, "AlarmReceiver START executeLine");
         crond.executeLine(line, lineNo);
         Log.i(TAG, "AlarmReceiver STOP executeLine");
+        crond.scheduleLine(line, lineNo, false, false, false);
 
         handler.post(() -> finishJob());
     }
