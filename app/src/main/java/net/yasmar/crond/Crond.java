@@ -147,9 +147,10 @@ class Crond {
         intent.putExtra(INTENT_EXTRA_LINE_NAME, line);
         intent.putExtra(INTENT_EXTRA_LINE_NO_NAME, lineNo);
         int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, lineNo, intent,
-                flags); // update current to replace the one used
-                        // for cancelling any previous set alarms
+        // update current to replace the one used
+        // for cancelling any previous set alarms
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, lineNo, intent, flags);
+        alarmManager.cancel(alarmIntent);
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getMillis(), alarmIntent);
         IO.logToLogFile(context.getString(R.string.log_scheduled_v2, lineNo + 1, parsedLine.runExpr,
                 DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss.SSSS").print(next)));
