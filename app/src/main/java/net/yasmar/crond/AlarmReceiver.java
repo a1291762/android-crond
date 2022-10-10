@@ -12,6 +12,8 @@ import android.util.Log;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import eu.chainfire.libsuperuser.Shell;
+
 import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NAME;
 import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
 import static net.yasmar.crond.Constants.PREFERENCES_FILE;
@@ -44,6 +46,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
         Log.i(TAG, "spinning up a thread");
         executor.execute(() -> {
+            IO.rootAvailable = Shell.SU.available();
+            IO.nonRootPrefix = context.getExternalFilesDir(null);
             Log.i(TAG, "execute line "+line+" lineNo" + lineNo);
             crond.executeLine(line, lineNo);
             Log.i(TAG, "posting to the main thread");
