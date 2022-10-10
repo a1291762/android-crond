@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPrefs = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE);
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkRoot() {
+        Log.i(TAG, "checkRoot");
         executor.execute(() -> {
             IO.rootAvailable = Shell.SU.available();
             IO.nonRootPrefix = getExternalFilesDir(null);
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void postCheckRoot() {
+        Log.i(TAG, "postCheckRoot");
         final Runnable next = this::checkBattery;
         if (!IO.rootAvailable) {
             boolean hasWarned = sharedPrefs.getBoolean(PREF_ROOT_WARNING, false);
@@ -96,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkBattery() {
+        Log.i(TAG, "checkBattery");
         final Runnable next = this::checkNotifications;
         boolean hasWarned = sharedPrefs.getBoolean(PREF_BATTERY_WARNING, false);
         String packageName = getPackageName();
@@ -128,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkNotifications() {
+        Log.i(TAG, "checkNotifications");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             boolean showNotification = sharedPrefs.getBoolean(PREF_NOTIFICATION_ENABLED, false);
             if (showNotification) {
@@ -142,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Log.i(TAG, "init");
         inited = true;
         crond = new Crond(this);
 
@@ -206,22 +213,30 @@ public class MainActivity extends AppCompatActivity {
                 .show());
 
         updateEnabled();
-        refreshHandler.post(refresh);
+        Log.i(TAG, "calling refresh at the end of creating");
+        refreshImmediately();
     }
 
     @Override
     public void onResume() {
+        Log.i(TAG, "onResume");
         super.onResume();
         if (inited && !IO.rootAvailable) {
             checkRootGranted();
+        } else {
+            Log.i(TAG, "not calling checkRootGranted");
         }
         refreshHandler.removeCallbacksAndMessages(null);
         if (inited) {
-            refreshHandler.post(refresh);
+            Log.i(TAG, "calling refresh from onResume");
+            refreshImmediately();
+        } else {
+            Log.i(TAG, "not calling refresh from onResume");
         }
     }
 
     private void checkRootGranted() {
+        Log.i(TAG, "checkRootGranted");
         executor.execute(() -> {
             if (Shell.SU.available()) {
                 handler.post(() -> {
@@ -294,10 +309,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             executor.execute(() -> {
+                Log.i(TAG, "reading crontab and log");
                 crond.setCrontab(IO.readFileContents(IO.getCrontabPath()));
                 CharSequence crontab = crond.processCrontab();
                 CharSequence log = IO.readFileContents(IO.getLogPath());
                 handler.post(() -> {
+                    Log.i(TAG, "updating UI with crontab and log");
                     final TextView crontabContent = findViewById(R.id.text_content_crontab);
                     crontabContent.setText(crontab);
 
@@ -306,6 +323,7 @@ public class MainActivity extends AppCompatActivity {
                     Layout layout = crondLog.getLayout();
                     if (layout == null) {
                         // When launching with the screen off... we get here. Avoid crashing!
+                        Log.i(TAG, "layout == null");
                         return;
                     }
                     final int scrollAmount = layout.getLineTop(crondLog.getLineCount()) - crondLog.getHeight();
