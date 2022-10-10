@@ -46,6 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
         Log.i(TAG, "spinning up a thread");
         executor.execute(() -> {
+            Log.i(TAG, "checking for root");
             IO.rootAvailable = Shell.SU.available();
             IO.nonRootPrefix = context.getExternalFilesDir(null);
             Log.i(TAG, "execute line "+line+" lineNo" + lineNo);
