@@ -1,3 +1,8 @@
+* Re-add the job running service and scheduling changes, since battery optimization is what actually
+  fixed the scheduling issues I had.
+
+v1.3 (1016)
+
 * Work correctly when the crond process is launched to handle the alarm.
 
 v1.3 (1015)
