@@ -1,3 +1,7 @@
+* Work correctly when the crond process is launched to handle the alarm.
+
+v1.3 (1015)
+
 * Revert the job running service and scheduling changes, since battery optimization is what actually
   fixed the scheduling issues I had.
 * Target Android 13 and update dependencies to current versions.
