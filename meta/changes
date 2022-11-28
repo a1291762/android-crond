@@ -1,5 +1,6 @@
-* Re-add the job running service and scheduling changes, since battery optimization is what actually
-  fixed the scheduling issues I had.
+* Re-add the job running service, since it ensures the app is not prevented from
+  responding to alarm events after several days. Forcing the app to not be optimized
+  also works, but this seems better.
 
 v1.3 (1016)
 
