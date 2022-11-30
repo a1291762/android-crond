@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void postCheckRoot() {
-        final Runnable next = this::checkBattery;
+        final Runnable next = this::checkNotifications;
         if (!IO.rootAvailable) {
             boolean hasWarned = sharedPrefs.getBoolean(PREF_ROOT_WARNING, false);
             if (!hasWarned) {
@@ -92,38 +92,6 @@ public class MainActivity extends AppCompatActivity {
                         .show();
                 return;
             }
-        }
-        next.run();
-    }
-
-    private void checkBattery() {
-        final Runnable next = this::checkNotifications;
-        boolean hasWarned = sharedPrefs.getBoolean(PREF_BATTERY_WARNING, false);
-        String packageName = getPackageName();
-        PowerManager pm = (PowerManager)getSystemService(POWER_SERVICE);
-        if (!pm.isIgnoringBatteryOptimizations(packageName) && !hasWarned) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Battery optimization detected")
-                    .setMessage("Please disable battery optimization. Otherwise scheduled jobs will probably not run.")
-                    .setPositiveButton(android.R.string.yes, (d, w) -> {
-                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                        editor.putBoolean(PREF_BATTERY_WARNING, true);
-                        editor.apply();
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                        intent.setData(Uri.parse("package:"+packageName));
-                        startActivity(intent);
-                        next.run();
-                    })
-                    .setNegativeButton(android.R.string.no, (d, w) -> {
-                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                        editor.putBoolean(PREF_BATTERY_WARNING, true);
-                        editor.apply();
-                        next.run();
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
-            return;
         }
         next.run();
     }
