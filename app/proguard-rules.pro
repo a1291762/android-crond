@@ -23,3 +23,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn javax.annotation.CheckReturnValue
+-dontwarn javax.annotation.Nullable
+-dontwarn org.joda.convert.FromString
+-dontwarn org.joda.convert.ToString
+-dontwarn org.slf4j.impl.StaticLoggerBinder

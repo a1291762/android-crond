@@ -31,8 +31,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".AlarmReceiver"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true"/>
         <service android:name=".JobRunnerService" />
     </application>
 
