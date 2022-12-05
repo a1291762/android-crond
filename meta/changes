@@ -1,3 +1,8 @@
+* Stop requesting background optimization disabled, since the job running service means this isn't
+  needed anymore.
+
+v1.3 (1017)
+
 * Re-add the job running service, since it ensures the app is not prevented from
   responding to alarm events after several days. Forcing the app to not be optimized
   also works, but this seems better.
