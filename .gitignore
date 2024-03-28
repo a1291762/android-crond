@@ -31,3 +31,5 @@ local.properties
 
 Makefile
 
+# release signing config
+keystore.properties
