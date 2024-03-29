@@ -62,8 +62,8 @@ class IO implements Shell.OnCommandResultListener2 {
 
     private static final Escaper shellEscaper;
     static {
-        final Escapers.Builder builder = Escapers.builder();
-        builder.addEscape('\'', "'\"'\"'");
+        final Escapers.Builder builder = Escapers.builder()
+                .addEscape('\'', "'\"'\"'");
         shellEscaper = builder.build();
     }
 
@@ -73,7 +73,7 @@ class IO implements Shell.OnCommandResultListener2 {
                 + getLogPath()).getOutput());
     }
 
-    class CommandResult {
+    static class CommandResult {
         private final int exitCode;
         private final String output;
         CommandResult(int returnCode, List<String> output) {
@@ -96,7 +96,7 @@ class IO implements Shell.OnCommandResultListener2 {
 
     private static IO instance = null;
     private CommandResult lastResult = null;
-    private Shell.Interactive shell;
+    private final Shell.Interactive shell;
 
     private IO() {
         Shell.Builder builder = new Shell.Builder()

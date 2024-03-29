@@ -18,7 +18,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // security check:
-        if (!intent.getAction().equals(BOOT_ACTION_STRING)){
+        if (!BOOT_ACTION_STRING.equals(intent.getAction())) {
             Log.e(TAG, "Invalid action string: \"" + intent.getAction()
                     + "\" should be \"" + BOOT_ACTION_STRING + "\"");
             return;

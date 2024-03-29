@@ -46,9 +46,9 @@ class Crond {
             new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
     private CronDescriptor descriptor;
 
-    private Context context;
-    private AlarmManager alarmManager;
-    private SharedPreferences sharedPrefs;
+    private final Context context;
+    private final AlarmManager alarmManager;
+    private final SharedPreferences sharedPrefs;
     private String crontab = "";
 
     private static final String PREF_CRONTAB_LINE_COUNT = "old_tab_line_count";
@@ -81,7 +81,7 @@ class Crond {
             e.printStackTrace();
         }
         if (!hashedTab.equals(sharedPrefs.getString(PREF_CRONTAB_HASH, ""))
-                && !crontab.equals("")) {
+                && !crontab.isEmpty()) {
             // only schedule when enabled
             if (sharedPrefs.getBoolean(PREF_ENABLED, false)) {
                 IO.logToLogFile(context.getString(R.string.log_crontab_change_detected));
@@ -90,7 +90,7 @@ class Crond {
             // save in any case such that on installation the crontab is not "new"
             sharedPrefs.edit().putString(PREF_CRONTAB_HASH, hashedTab).apply();
         }
-        if (crontab.equals("")) {
+        if (crontab.isEmpty()) {
             return ret;
         }
         for (String line : crontab.split("\n")){
@@ -125,23 +125,28 @@ class Crond {
             return;
         }
         DateTime next;
-        if (parsedLine.cronExpr.equals("@enable")) {
-            if (!isEnable) return;
-            next = DateTime.now().plusSeconds(1);
-        } else if (parsedLine.cronExpr.equals("@change")) {
-            if (!isChange) return;
-            next = DateTime.now().plusSeconds(1);
-        } else if (parsedLine.cronExpr.equals("@reboot")) {
-            if (!isBoot) return;
-            next = DateTime.now().plusSeconds(1);
-        } else {
-            ExecutionTime time;
-            try {
-                time = ExecutionTime.forCron(parser.parse(parsedLine.cronExpr));
-            } catch (IllegalArgumentException e) {
-                return;
-            }
-            next = time.nextExecution(DateTime.now());
+        switch (parsedLine.cronExpr) {
+            case "@enable":
+                if (!isEnable) return;
+                next = DateTime.now().plusSeconds(1);
+                break;
+            case "@change":
+                if (!isChange) return;
+                next = DateTime.now().plusSeconds(1);
+                break;
+            case "@reboot":
+                if (!isBoot) return;
+                next = DateTime.now().plusSeconds(1);
+                break;
+            default:
+                ExecutionTime time;
+                try {
+                    time = ExecutionTime.forCron(parser.parse(parsedLine.cronExpr));
+                } catch (IllegalArgumentException e) {
+                    return;
+                }
+                next = time.nextExecution(DateTime.now());
+                break;
         }
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(INTENT_EXTRA_LINE_NAME, line);
@@ -185,14 +190,19 @@ class Crond {
                 ret.append(parsedLine.runExpr + " ",
                         new TypefaceSpan("monospace"), Spanned.SPAN_COMPOSING);
                 String description;
-                if (parsedLine.cronExpr.equals("@enable")) {
-                    description = context.getString(R.string.when_enabling);
-                } else if (parsedLine.cronExpr.equals("@change")) {
-                    description = context.getString(R.string.when_crontab_changes);
-                } else if (parsedLine.cronExpr.equals("@reboot")) {
-                    description = context.getString(R.string.at_reboot);
-                } else {
-                    description = descriptor.describe(parser.parse(parsedLine.cronExpr));
+                switch (parsedLine.cronExpr) {
+                    case "@enable":
+                        description = context.getString(R.string.when_enabling);
+                        break;
+                    case "@change":
+                        description = context.getString(R.string.when_crontab_changes);
+                        break;
+                    case "@reboot":
+                        description = context.getString(R.string.at_reboot);
+                        break;
+                    default:
+                        description = descriptor.describe(parser.parse(parsedLine.cronExpr));
+                        break;
                 }
                 ret.append(description + "\n",
                         new StyleSpan(Typeface.ITALIC), Spanned.SPAN_COMPOSING);
@@ -224,7 +234,7 @@ class Crond {
 
     private ParsedLine parseLine(String line) {
         line = line.trim();
-        if (line.equals("")) {
+        if (line.isEmpty()) {
             return null;
         }
         if (line.charAt(0) != '*'
@@ -247,7 +257,7 @@ class Crond {
         return new ParsedLine(joinedCronExpr, joinedRunExpr);
     }
 
-    private class ParsedLine {
+    private static class ParsedLine {
         final String cronExpr;
         final String runExpr;
         ParsedLine(String cronExpr, String runExpr) {

@@ -5,20 +5,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
-import android.provider.Settings;
 import android.text.Layout;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,7 +31,6 @@ import eu.chainfire.libsuperuser.Shell;
 import static android.view.View.VISIBLE;
 import static net.yasmar.crond.Constants.POST_NOTIFICATIONS;
 import static net.yasmar.crond.Constants.PREFERENCES_FILE;
-import static net.yasmar.crond.Constants.PREF_BATTERY_WARNING;
 import static net.yasmar.crond.Constants.PREF_ENABLED;
 import static net.yasmar.crond.Constants.PREF_NOTIFICATION_ENABLED;
 import static net.yasmar.crond.Constants.PREF_ROOT_WARNING;
@@ -44,7 +38,7 @@ import static net.yasmar.crond.Constants.PREF_USE_WAKE_LOCK;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    //private static final String TAG = "MainActivity";
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -68,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
         executor.execute(() -> {
             IO.rootAvailable = Shell.SU.available();
             IO.nonRootPrefix = getExternalFilesDir(null);
-            handler.post(() -> {
-                postCheckRoot();
-            });
+            handler.post(this::postCheckRoot);
         });
     }
 
@@ -163,14 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle(R.string.dialog_clean_title)
                 .setMessage(R.string.dialog_clean_message)
                 .setNegativeButton(R.string.no, null)
-                .setPositiveButton(R.string.yes, new AlertDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        executor.execute(() -> {
-                            IO.clearLogFile();
-                        });
-                        refreshImmediately();
-                    }
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    executor.execute(IO::clearLogFile);
+                    refreshImmediately();
                 })
                 .show());
 
@@ -193,17 +180,15 @@ public class MainActivity extends AppCompatActivity {
     private void checkRootGranted() {
         executor.execute(() -> {
             if (Shell.SU.available()) {
-                handler.post(() -> {
-                    new AlertDialog.Builder(this)
-                            .setTitle("Root granted")
-                            .setMessage("The app will close. Please re-open the app again.")
-                            .setNeutralButton(android.R.string.ok, (d, w) -> {
-                                finish();
-                                System.exit(0);
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                });
+                handler.post(() -> new AlertDialog.Builder(this)
+                        .setTitle("Root granted")
+                        .setMessage("The app will close. Please re-open the app again.")
+                        .setNeutralButton(android.R.string.ok, (d, w) -> {
+                            finish();
+                            System.exit(0);
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show());
             }
         });
     }

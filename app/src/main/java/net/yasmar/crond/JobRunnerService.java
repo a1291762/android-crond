@@ -27,6 +27,7 @@ public class JobRunnerService
         extends Service {
 
     private static final String TAG = "JobRunnerService";
+    private static final String WAKELOCK_TAG = TAG + ":job_lock";
     private static final String PERSISTENT_CHANNEL = "persistent";
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -49,7 +50,7 @@ public class JobRunnerService
 
         if (sharedPrefs.getBoolean(PREF_USE_WAKE_LOCK, false)) {
             PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKELOCK_TAG);
             wakeLock.acquire();
         }
 
@@ -118,14 +119,16 @@ public class JobRunnerService
 
     void runJob(Intent intent) {
         Crond crond = new Crond(context);
-        String line = intent.getExtras().getString(INTENT_EXTRA_LINE_NAME);
-        int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
-        IO.rootAvailable = Shell.SU.available();
-        IO.nonRootPrefix = context.getExternalFilesDir(null);
-        crond.executeLine(line, lineNo);
-        crond.scheduleLine(line, lineNo, false, false, false);
+        if (intent.getExtras() != null) {
+            String line = intent.getExtras().getString(INTENT_EXTRA_LINE_NAME);
+            int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
+            IO.rootAvailable = Shell.SU.available();
+            IO.nonRootPrefix = context.getExternalFilesDir(null);
+            crond.executeLine(line, lineNo);
+            crond.scheduleLine(line, lineNo, false, false, false);
+        }
 
-        handler.post(() -> finishJob());
+        handler.post(this::finishJob);
     }
 
     void finishJob() {
