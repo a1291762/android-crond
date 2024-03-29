@@ -16,8 +16,6 @@ import android.os.PowerManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import eu.chainfire.libsuperuser.Shell;
-
 import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NAME;
 import static net.yasmar.crond.Constants.INTENT_EXTRA_LINE_NO_NAME;
 import static net.yasmar.crond.Constants.PREFERENCES_FILE;
@@ -122,8 +120,6 @@ public class JobRunnerService
         if (intent.getExtras() != null) {
             String line = intent.getExtras().getString(INTENT_EXTRA_LINE_NAME);
             int lineNo = intent.getExtras().getInt(INTENT_EXTRA_LINE_NO_NAME);
-            IO.rootAvailable = Shell.SU.available();
-            IO.nonRootPrefix = context.getExternalFilesDir(null);
             crond.executeLine(line, lineNo);
             crond.scheduleLine(line, lineNo, false, false, false);
         }

@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Crond crond = null;
 
     private SharedPreferences sharedPrefs = null;
+    private boolean rootAvailable = false;
     private boolean inited = false;
 
     @Override
@@ -60,15 +61,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkRoot() {
         executor.execute(() -> {
-            IO.rootAvailable = Shell.SU.available();
-            IO.nonRootPrefix = getExternalFilesDir(null);
+            rootAvailable = Shell.SU.available();
             handler.post(this::postCheckRoot);
         });
     }
 
     private void postCheckRoot() {
         final Runnable next = this::checkNotifications;
-        if (!IO.rootAvailable) {
+        if (rootAvailable) {
             boolean hasWarned = sharedPrefs.getBoolean(PREF_ROOT_WARNING, false);
             if (!hasWarned) {
                 new AlertDialog.Builder(this)
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (!inited) {
+        if (!inited && rootAvailable) {
             init();
         }
     }
@@ -168,11 +168,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (inited && !IO.rootAvailable) {
+        if (inited && !rootAvailable) {
             checkRootGranted();
         }
         refreshHandler.removeCallbacksAndMessages(null);
-        if (inited) {
+        if (inited && rootAvailable) {
             refreshImmediately();
         }
     }
