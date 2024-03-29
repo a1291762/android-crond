@@ -1,3 +1,4 @@
 package=net.yasmar.crond
 activity=MainActivity
 apkname=app
+app=app

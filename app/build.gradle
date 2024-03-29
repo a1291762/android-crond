@@ -7,11 +7,11 @@ if(versionPropsFile.exists())
 def code = (versionProps['VERSION_CODE'] ?: "1").toInteger()
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
         applicationId "net.yasmar.crond"
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode code
         versionName "v1.3 ("+code+")"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

@@ -1,3 +1,7 @@
+* Target Android 14 (API 34).
+
+v1.3 (1018)
+
 * Stop requesting background optimization disabled, since the job running service means this isn't
   needed anymore.
 
