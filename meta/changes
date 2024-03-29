@@ -1,4 +1,6 @@
 * Target Android 14 (API 34).
+* Disable the ability to work without root because it was not very useful and broke jobs scheduled
+after boot complete (unless the app was opened and crond stopped and started).
 
 v1.3 (1018)
 
